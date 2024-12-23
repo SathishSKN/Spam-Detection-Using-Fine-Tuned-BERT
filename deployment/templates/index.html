@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spam Detection</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, #e6f7ff 100%); /* Light gradient background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            flex-direction: column;
+        }
+        .title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #333333;
+            font-weight: 700;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .box {
+            background: #f9f9f9; /* Light gray background */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            animation: slideIn 1s ease-in-out;
+        }
+        .box textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 2px solid #00bfae; /* Vibrant border */
+            border-radius: 8px;
+            resize: none;
+            font-size: 16px;
+            background: #ffffff; /* White background for textarea */
+            color: #333333;
+            transition: border-color 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+        .box textarea:focus {
+            border-color: #009688; /* Darker border on focus */
+            outline: none;
+        }
+        .box input[type="submit"] {
+            margin-top: 20px;
+            padding: 12px 24px;
+            border: none;
+            background-color: #00bfae; /* Vibrant submit button */
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .box input[type="submit"]:hover {
+            background-color: #009688; /* Darker vibrant on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        .box #result {
+            margin-top: 30px;
+            font-size: 18px;
+            color: #333333;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .warning {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666666;
+            text-align: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .warning a {
+            color: #00bfae;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .warning a:hover {
+            color: #009688;
+        }
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 191, 174, 0.3);
+            border-top-color: #00bfae;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes showResult {
+            from {
+                transform: translateY(10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="title">Spam Detection</div>
+    <div class="box">
+        <form id="spamForm">
+            <textarea name="message" id="message" placeholder="Paste your message here..."></textarea><br>
+            <input type="submit" value="Check for Spam">
+        </form>
+        <div id="result"></div>
+    </div>
+    <!-- Loading spinner -->
+    <div class="spinner" id="spinner"></div>
+    <div class="warning">
+        This is a fine-tuned spam detection model based on BERT. For queries or support, please contact via <a href="https://github.com/SathishSKN" target="_blank">GitHub</a>.
+    </div>
+
+    <script>
+        // Clear the text area when the page is loaded
+        window.onload = function() {
+            document.getElementById('message').value = '';
+        };
+
+        document.getElementById('spamForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+            const message = document.getElementById('message').value;
+            
+            // Show the spinner
+            document.getElementById('spinner').style.display = 'block';
+
+            const response = await fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ message: message })
+            });
+
+            const result = await response.text();
+            document.getElementById('spinner').style.display = 'none'; // Hide the spinner
+            document.getElementById('result').innerHTML = `<p>${result}</p>`;
+        });
+    </script>
+</body>
+</html>
